@@ -17,15 +17,17 @@ const defaultModalState = {
   description: "",
   content: "",
   is_enabled: 0,
-  imagesUrl: [""]
+  imagesUrl: [""],
+  can_ice: 0,
+  can_hot: 0,
 };
 
 function ProductPage() {
 
   // 產品資料狀態
-  const [products , setProducts] = useState([]);
+  const [ products , setProducts ] = useState([]);
   // 產品詳細狀態
-  const [tempProduct , setTempProduct] = useState(defaultModalState);
+  const [ tempProduct , setTempProduct ] = useState(defaultModalState);
   // 產品分頁狀態
   const [ pagination , setPagination ] = useState([])
   // 取得產品資料
@@ -169,6 +171,7 @@ function ProductPage() {
         isOpen = {isOpenModal}
         setIsOpen = {setIsOpenMoadl}
         getProducts = {getProducts}
+        pageInfo={pagination}
       />
     </>
   )
