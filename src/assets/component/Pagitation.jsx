@@ -5,11 +5,13 @@ import Swal from 'sweetalert2'
 
 const { VITE_BASE_URL , VITE_API_PAHT } = import.meta.env;
 
-function Pagitation() {
+function Pagination() {
 
   return (
     <>
     
     </>
   )
-}
+};
+
+export default Pagination;
