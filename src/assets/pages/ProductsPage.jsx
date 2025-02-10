@@ -2,6 +2,7 @@ import { useState , useEffect} from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import ProductModal from '../component/ProductModal';
+import Pagination from '../component/Pagination';
 
 const { VITE_BASE_URL , VITE_API_PAHT } = import.meta.env;
 
@@ -25,13 +26,17 @@ function ProductPage() {
   const [products , setProducts] = useState([]);
   // 產品詳細狀態
   const [tempProduct , setTempProduct] = useState(defaultModalState);
+  // 產品分頁狀態
+  const [ pagination , setPagination ] = useState([])
   // 取得產品資料
-  const getProducts = () => {
-    axios.get(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/products`)
-      .then((res) => {
-        setProducts(res.data.products)
-      })
-      .catch((err) => console.error(err))
+  const getProducts = async (page = 1) => {
+    try {
+      const res = await axios.get(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/products?page=${page}`);
+      setProducts(res.data.products);
+      setPagination(res.data.pagination);
+    } catch (error) {
+      console.log(error);
+    }
   }
   // 初始化取資料
   useEffect(() => {
@@ -44,8 +49,9 @@ function ProductPage() {
   },[])
 
 
-  // 控制Modal
+  // Modal類型狀態
   const [ modalMode , setModalMode ] = useState(null);
+  // Modal開關狀態
   const [ isOpenModal , setIsOpenMoadl ] = useState(false)
 
   // Modal開關功能
@@ -68,77 +74,6 @@ function ProductPage() {
 
     setIsOpenMoadl(true)
   };
-
-  // 新增產品
-  const createProduct = async () => {
-    try {
-      await axios.post(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/product`, {
-        data : {
-          ...tempProduct,
-          origin_price : Number(tempProduct.origin_price),
-          price: Number(tempProduct.price),
-          is_enabled: tempProduct.is_enabled ? 1 : 0
-        }
-      });
-      Swal.fire({
-        title: "成功建立新的產品",
-        icon: "success",
-        draggable: true
-      }).then(() => {
-        getProducts()
-        handleCloseProductModal();
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "新增產品失敗",
-        text: "請重新確認資料"
-      });
-    }
-  }
-  // 修改產品
-  const editProduct = async (product) => {
-    const id = product.id;
-    try {
-      await axios.put(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/product/${id}`, {
-        data : {
-          ...tempProduct,
-          origin_price : Number(tempProduct.origin_price),
-          price: Number(tempProduct.price),
-          is_enabled: tempProduct.is_enabled ? 1 : 0
-        }
-      });
-      Swal.fire({
-        title: "成功更新的產品",
-        icon: "success",
-        draggable: true
-      }).then(() => {
-        getProducts()
-        handleCloseProductModal();
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "更新產品失敗",
-        text: "請重新確認資料"
-      });
-      console.log(error)
-    }
-  }
-  
-  const handleUpdateProduct = async (product) => {
-    switch (modalMode) {
-      case "create":
-        await createProduct();
-        break;
-      case "edit":
-        await editProduct(product);
-        break;
-
-      default:
-        break;
-    }
-  }
 
   // 刪除產品
   const deleteProduct = async (product) => {
@@ -222,12 +157,18 @@ function ProductPage() {
         </div>
       </div>
 
+      <Pagination 
+        products={products}
+        pageInfo={pagination}
+        getProducts={getProducts}
+      />
+
       <ProductModal 
         modalMode = {modalMode}
         tempProduct = {tempProduct}
-        handleUpdateProduct = {handleUpdateProduct}
         isOpen = {isOpenModal}
         setIsOpen = {setIsOpenMoadl}
+        getProducts = {getProducts}
       />
     </>
   )
