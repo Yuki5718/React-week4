@@ -90,6 +90,45 @@ function ProductModal({
   }
   // 修改副圖
 
+  // 上傳圖片
+  const handleUploadChange = async(e , imgType) => {
+    const file = e.target.files[0]
+    const formData = new FormData();
+    formData.append("file-to-upload", file);
+
+    try {
+      const res = await axios.post(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/upload` , formData)
+      const imageUrl = res.data.imageUrl
+
+      switch (imgType) {
+        case "main":
+          setModalDate({
+            ...modalData,
+            imageUrl
+          });
+          break;
+
+        case "minor":
+          const newImgsArr = [...modalData.imagesUrl];
+          newImgsArr.pop()
+          newImgsArr.push(imageUrl)
+          setModalDate({
+            ...modalData,
+            imagesUrl: newImgsArr
+          });
+          break;
+      
+        default:
+          break;
+      }
+      e.target.value = null
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  // 上傳圖片
+
   return (
     <>
                                                                           {/* Modal backdrop被取消，因此補上背景顏色 */}
@@ -104,6 +143,10 @@ function ProductModal({
               <div className="row">
                 <div className="col-4">
                   {/* 主圖 */}
+                  <div className="mb-3">
+                    <label htmlFor="fileInput" className="form-label"> 圖片上傳 </label>
+                    <input type="file" accept=".jpg,.jpeg,.png" className="form-control" id="fileInput" onChange={(e) => handleUploadChange (e , "main")}/>
+                  </div>
                   <div className="mb-4">
                     <label htmlFor="primary-image" className="form-label">主圖</label>
                     <input name="imageUrl" id="primary-image" type="text" className="form-control mb-2" placeholder="請輸入圖片連結"
@@ -112,6 +155,10 @@ function ProductModal({
                   </div>
                   {/* 副圖 */}
                   <div className="border border-2 border-dashed rounded-3 p-3">
+                    <div className="mb-3">
+                      <label htmlFor="fileInput" className="form-label"> 圖片上傳 </label>
+                      <input type="file" accept=".jpg,.jpeg,.png" className="form-control" id="fileInput" onChange={(e) => handleUploadChange (e , "minor")}/>
+                    </div>
                     {modalData.imagesUrl?.map((image, index) => (
                       <div key={index} className="mb-2">
                         <label htmlFor={`imagesUrl-${index + 1}`} className="form-label" > 副圖 {index + 1} </label>
