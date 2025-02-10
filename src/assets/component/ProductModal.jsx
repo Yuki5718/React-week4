@@ -10,7 +10,8 @@ function ProductModal({
   tempProduct,
   isOpen,
   setIsOpen,
-  getProducts
+  getProducts,
+  pageInfo
 }) {
   // Modal相關
   const productModalRef = useRef(null);
@@ -61,13 +62,14 @@ function ProductModal({
           ...modalData,
           origin_price : Number(modalData.origin_price),
           price: Number(modalData.price),
-          is_enabled: modalData.is_enabled ? 1 : 0
+          is_enabled: modalData.is_enabled ? 1 : 0 ,
+          can_ice: modalData.can_ice ? 1 : 0 ,
+          can_hot: modalData.can_hot ? 1 : 0 ,
         }
       });
       Swal.fire({
         title: "成功建立新的產品",
         icon: "success",
-        draggable: true
       }).then(() => {
         getProducts()
         handleCloseProductModal();
@@ -89,15 +91,16 @@ function ProductModal({
           ...modalData,
           origin_price : Number(modalData.origin_price),
           price: Number(modalData.price),
-          is_enabled: modalData.is_enabled ? 1 : 0
+          is_enabled: modalData.is_enabled ? 1 : 0 ,
+          can_ice: modalData.can_ice ? 1 : 0 ,
+          can_hot: modalData.can_hot ? 1 : 0 ,
         }
       });
       Swal.fire({
         title: "成功更新的產品",
         icon: "success",
-        draggable: true
       }).then(() => {
-        getProducts()
+        getProducts(pageInfo.current_page)
         handleCloseProductModal();
       });
     } catch (error) {
@@ -140,7 +143,6 @@ function ProductModal({
 
   const addImg = () => {
     const newImgsArr = [...modalData.imagesUrl, ""];
-
     // newImgsArr.push("");
 
     setModalDate({
