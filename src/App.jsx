@@ -1,12 +1,6 @@
-import { useState , useRef , useEffect} from 'react'
-import { Modal } from 'bootstrap'
-import axios from 'axios'
-import Swal from 'sweetalert2'
+import { useState } from 'react'
 import LoginPage from './assets/pages/LoginPage';
 import ProductPage from './assets/pages/ProductsPage';
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-const API_PATH = import.meta.env.VITE_API_PAHT;
 
 function App() {
   // 授權狀態，預設false
@@ -14,11 +8,9 @@ function App() {
 
   return (
   <>{isAuth ? (
-    // <></>
+    // <><h1>hello</h1></>
     <ProductPage />
-  ) : ( <LoginPage setIsAuth={setIsAuth} />
-    )}
-
+  ) : ( <LoginPage setIsAuth={setIsAuth} />)}
   </>)
 }
 
