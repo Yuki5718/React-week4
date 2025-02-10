@@ -1,15 +1,16 @@
 import { useState , useRef , useEffect} from 'react'
 import { Modal } from 'bootstrap'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const { VITE_BASE_URL , VITE_API_PAHT } = import.meta.env;
 
 function ProductModal({
   modalMode,
   tempProduct,
-  handleUpdateProduct,
   isOpen,
-  setIsOpen
+  setIsOpen,
+  getProducts
 }) {
   // Modal相關
   const productModalRef = useRef(null);
@@ -51,6 +52,77 @@ function ProductModal({
       [name] : type === "checkbox" ? checked : value
     });
   };
+
+  // 新增產品
+  const createProduct = async () => {
+    try {
+      await axios.post(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/product`, {
+        data : {
+          ...modalData,
+          origin_price : Number(modalData.origin_price),
+          price: Number(modalData.price),
+          is_enabled: modalData.is_enabled ? 1 : 0
+        }
+      });
+      Swal.fire({
+        title: "成功建立新的產品",
+        icon: "success",
+        draggable: true
+      }).then(() => {
+        getProducts()
+        handleCloseProductModal();
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "新增產品失敗",
+        text: "請重新確認資料"
+      });
+    }
+  }
+  // 修改產品
+  const editProduct = async (product) => {
+    const id = product.id;
+    try {
+      await axios.put(`${VITE_BASE_URL}/api/${VITE_API_PAHT}/admin/product/${id}`, {
+        data : {
+          ...modalData,
+          origin_price : Number(modalData.origin_price),
+          price: Number(modalData.price),
+          is_enabled: modalData.is_enabled ? 1 : 0
+        }
+      });
+      Swal.fire({
+        title: "成功更新的產品",
+        icon: "success",
+        draggable: true
+      }).then(() => {
+        getProducts()
+        handleCloseProductModal();
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "更新產品失敗",
+        text: "請重新確認資料"
+      });
+      console.log(error)
+    }
+  }
+  
+  const handleUpdateProduct = async (product) => {
+    switch (modalMode) {
+      case "create":
+        await createProduct();
+        break;
+      case "edit":
+        await editProduct(product);
+        break;
+
+      default:
+        break;
+    }
+  }
 
   // 修改副圖
   const handleImgChange = (e,index) => {
