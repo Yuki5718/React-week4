@@ -22,7 +22,8 @@ function LoginPage({setIsAuth}) {
   };
 
   // 發送登入請求
-  const submitLogin = async() => {
+  const submitLogin = async(e) => {
+    e.preventDefault()
     try {
       // 發送登入請求
       const response = await axios.post(`${VITE_BASE_URL}/admin/signin`, account);
@@ -66,15 +67,17 @@ function LoginPage({setIsAuth}) {
         <div className="row vh-100 align-items-center justify-content-center">
           <div className="col-3 text-center">
             <h1 className="fw-bold mb-4">登入系統</h1>
-            <div className="form-floating mb-3">
-              <input name="username" type="email" className="form-control" id="username" placeholder="Email address" onChange={handleInputAccount} />
-              <label htmlFor="username">請輸入Email</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input name="password" type="password" className="form-control" id="password" placeholder="Password" onChange={handleInputAccount} />
-              <label htmlFor="password">請輸入密碼</label>
-            </div>
-            <button type="button" onClick={submitLogin} className="btn btn-primary w-100">登入</button>
+            <form onSubmit={(e) => submitLogin(e)}>
+              <div className="form-floating mb-3">
+                <input name="username" type="email" className="form-control" id="username" placeholder="Email address" onChange={handleInputAccount} />
+                <label htmlFor="username">請輸入Email</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input name="password" type="password" className="form-control" id="password" placeholder="Password" onChange={handleInputAccount} />
+                <label htmlFor="password">請輸入密碼</label>
+              </div>
+              <button type="submit" className="btn btn-primary w-100">登入</button>
+            </form>
           </div>
         </div>
       </div>
