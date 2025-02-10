@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/{gh-repo name}/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/{React-week4}/' : '/',
   plugins: [react()],
 })
